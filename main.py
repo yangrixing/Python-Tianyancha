@@ -62,18 +62,14 @@ def browserdriver():
     start driver
     :return: driver obj
     """
-    headers = {
-        'Referer':'https://www.baidu.com',
-        'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36'
-    }
-    for key, value in enumerate(headers):
-        capability_key = 'phantomjs.page.customHeaders.{}'.format(key)
-        webdriver.DesiredCapabilities.PHANTOMJS[capability_key] = value
-    driver = webdriver.PhantomJS(executable_path='lib/phantomjs.exe')
+    dcap = DesiredCapabilities.PHANTOMJS.copy()
+    dcap['phantomjs.page.customHeaders.Referer'] = 'https://www.baidu.com/'
+    dcap["phantomjs.page.settings.userAgent"] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36'
+    driver = webdriver.PhantomJS(executable_path='lib/phantomjs.exe', desired_capabilities=dcap)
     return driver
 
 
-def tyc_data(driver, url, keyword, fontname):
+def tyc_data(driver, url, keyword, maping):
     """
     get Tianyancha Data
     :param driver: brower
@@ -90,6 +86,7 @@ def tyc_data(driver, url, keyword, fontname):
         print e
     finally:
         source = driver.page_source.encode("utf-8")
+        
         tycsoup = BeautifulSoup(source, 'html.parser')
         name = tycsoup.select(
             "div.search_result_single > div.search_right_item > div > a.query_name > span > em")
@@ -98,6 +95,7 @@ def tyc_data(driver, url, keyword, fontname):
         )
         cmname = name[0].text if len(name) > 0 else None
         hiscmsname = hname[0].text if len(hname) > 0 else None
+        print cmname
         if cmname == keyword or hiscmsname == keyword:
             company_url = tycsoup.select('div.search_result_single > div.search_right_item > div > a.query_name')[0].get('href')
             driver.get(company_url)
@@ -111,8 +109,15 @@ def tyc_data(driver, url, keyword, fontname):
                 source = driver.page_source.encode("utf-8")
                 tycdata = BeautifulSoup(source, 'html.parser')
                 lpblock = tycdata.select("div.human-top > div > div > a")
-                lpname = lpblock[0].text
-                cpstatus = tycdata.find_all("div", class_=re.compile(r"\bstatusType\d"))[0].text
+                if len(lpblock) == 0:
+                    lpname = "暂无信息"
+                else:
+                    lpname = lpblock[0].text
+                cps = tycdata.find_all("div", class_=re.compile(r"\bstatusType\d"))
+                if len(cps) == 0:
+                    cpstatus = "暂无信息"
+                else:
+                    cpstatus = cps[0].text
                 reginfo = tycdata.select(
                     "div#_container_baseInfo > div > div > table.companyInfo-table > tbody > tr > td > div > div > div.baseinfo-module-content-value > text.tyc-num"
                 )
@@ -128,16 +133,19 @@ def tyc_data(driver, url, keyword, fontname):
                 binfo = [
                     keyword, cpstatus, lpname
                 ]
-                for regdata in reginfo:
-                    print regdecode(regdata.text, fontname)
-                    binfo.append(regdecode(regdata.text, fontname))
-                print regdecode(cpinfo[16].text, fontname)
-                binfo.append(regdecode(cpinfo[16].text, fontname))
-                for a in [1, 3, 6, 8, 10, 12, 14, 18, 22]:
-                    print cpinfo[a].text
-                    binfo.append(cpinfo[a].text)
-                print lineob[0].text
-                binfo.append(lineob[0].text)
+                if len(reginfo) != 0:
+                    for regdata in reginfo:
+                        print regdecode(maping, regdata.text)
+                        binfo.append(regdecode(maping, regdata.text))
+                    print regdecode(maping, cpinfo[16].text)
+                    binfo.append(regdecode(maping, cpinfo[16].text))
+                    for a in [1, 3, 6, 8, 10, 12, 14, 18, 22]:
+                        print cpinfo[a].text
+                        binfo.append(cpinfo[a].text)
+                    print lineob[0].text
+                    binfo.append(lineob[0].text)
+                else:
+                    pass
                 return binfo
         else:
             print '暂无信息'
@@ -207,9 +215,7 @@ def getmaping(fontfile):
         '7': str(numlist[7]),
         '8': str(numlist[8]),
         '9': str(numlist[9]),
-        '.': str(numlist[10]),
-        
-
+        '.': str(numlist[10])
     }
     return mapfont
 
@@ -221,9 +227,7 @@ def regdecode(mapfont, regstr):
         if stra in mapfont.keys():
             regdata.append(mapfont[stra])
         else:
-            print 'error'
             regdata.append(stra)
-    print "".join(regdata)
     return "".join(regdata)
         
 
@@ -249,11 +253,13 @@ def main(logfile, excelfile):
                 maping, fontname = gettycfont(driver)
             keyword = urllib.quote(cmyname.encode("utf-8"))
             tycurl = "https://www.tianyancha.com/search?key=" + keyword + "&checkFrom=searchBox"
-            binfo = tyc_data(driver, tycurl, cmyname, fontname)
+            binfo = tyc_data(driver, tycurl, cmyname, maping)
             if binfo is None:
+                print binfo
                 pass
             else:
                 ws.append(binfo)
+                wb.save(filename=newexcelfile)
             a = random.randint(10, 120)
             print "采集完毕，等待" + str(a) + "秒"
             time.sleep(a)
