@@ -13,6 +13,8 @@ from openpyxl.workbook import Workbook
 import random, time
 from PIL import Image, ImageFont, ImageDraw
 import pytesseract
+import pdb
+
 
 def openexcel(file):
     """
@@ -84,11 +86,14 @@ def tyc_data(driver, url, keyword, maping):
             break
         except Exception as e:
             print e
-            time.sleep(120)
+            print 'error wait 5 mins tyc_data1'
+            time.sleep(300)
+            driver.close()
+            driver = browserdriver()
     else:
         raise
     try:
-        element = WebDriverWait(driver, 60).until(
+        WebDriverWait(driver, 60).until(
         EC.presence_of_element_located((By.CLASS_NAME, "footerV2"))
         )
     except Exception as e:
@@ -102,6 +107,7 @@ def tyc_data(driver, url, keyword, maping):
         print cmname
         if cmname == keyword:
             company_url = "https://m.tianyancha.com" + tycsoup.select('div > div > div > div > a.query_name')[0].get('href')
+            print company_url
             fails = 1
             while fails < 31:
                 try:
@@ -109,7 +115,11 @@ def tyc_data(driver, url, keyword, maping):
                     break
                 except Exception as e:
                     print e
-                    time.sleep(120)
+                    print 'error wait 5 mins tyc_data2'
+                    time.sleep(300)
+                    driver.close()
+                    driver = browserdriver()
+
             else:
                 raise
             try:
@@ -161,7 +171,10 @@ def gettycfont(driver):
             break
         except Exception as e:
             print e
-            time.sleep(120)
+            print 'error wait 5 mins getfont1'
+            time.sleep(300)
+            driver.close()
+            driver = browserdriver()
     else:
         raise
     pagesouup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -177,7 +190,10 @@ def gettycfont(driver):
                     break
                 except Exception as e:
                     print e
-                    time.sleep(120)
+                    print 'error wait 5 mins getfont2'
+                    time.sleep(300)
+                    driver.close()
+                    driver = browserdriver()
             else:
                 raise
             csscode = driver.page_source
@@ -196,11 +212,14 @@ def fonttest(driver, fontfile):
     fails = 1
     while fails < 31:
         try:
-            driver.get("https://m.tianyancha.com/")
+            driver.get("https://m.tianyancha.com/")  
             break
         except Exception as e:
             print e
-            time.sleep(120)
+            print 'error wait 5 mins fonttest1'
+            time.sleep(300)
+            driver.close()
+            driver = browserdriver()
     else:
         raise
     pagesouup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -216,7 +235,10 @@ def fonttest(driver, fontfile):
                     break
                 except Exception as e:
                     print e
-                    time.sleep(120)
+                    print 'error wait 5 mins fonttest2'
+                    time.sleep(300)
+                    driver.close()
+                    driver = browserdriver()
             else:
                 raise
             csscode = driver.page_source
@@ -291,12 +313,12 @@ def main(logfile, excelfile):
             tycurl = "https://m.tianyancha.com/search?key=" + keyword + "&checkFrom=searchBox"
             binfo = tyc_data(driver, tycurl, cmyname, maping)
             if binfo is None:
-                print binfo
+                print "Error" + binfo + "is None"
                 pass
             else:
                 ws.append(binfo)
                 wb.save(filename=newexcelfile)
-            a = random.randint(1, 6)
+            a = random.randint(0, 0)
             print "采集完毕，等待" + str(a) + "秒"
             time.sleep(a)
     wb.save(filename=newexcelfile)
