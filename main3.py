@@ -58,11 +58,10 @@ def readdata(sheet, n=0):
     return dataset
 
 
-# def browserdriver():
+def browserdriver():
     """
     start driver
     :return: driver obj
-    """
     """
     ua = "Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.114 Mobile Safari/537.36"
     profile = webdriver.FirefoxProfile()
@@ -70,13 +69,13 @@ def readdata(sheet, n=0):
         "general.useragent.override", ua)
     driver = webdriver.Firefox(profile, executable_path='lib/geckodriver.exe')
     return driver
-"""
 
 
-def browserdriver():
+# def browserdriver():
     """
     start driver
     :return: driver obj
+    """
     """
     dcap = DesiredCapabilities.PHANTOMJS.copy()
     dcap['phantomjs.page.customHeaders.Referer'] = 'https://www.baidu.com/'
@@ -86,6 +85,7 @@ def browserdriver():
     dcap["phantomjs.page.settings.disk-cache"] = True
     driver = webdriver.PhantomJS(executable_path='lib/phantomjs', desired_capabilities=dcap)
     return driver
+"""
 
 
 def request(url):
