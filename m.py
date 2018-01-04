@@ -67,6 +67,9 @@ def browserdriver():
     dcap = DesiredCapabilities.PHANTOMJS.copy()
     dcap['phantomjs.page.customHeaders.Referer'] = 'https://www.baidu.com/'
     dcap["phantomjs.page.settings.userAgent"] = 'Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.114 Mobile Safari/537.36'
+    dcap["phantomjs.page.settings.loadImages"] = False
+    dcap["phantomjs.page.customHeaders.User-Agent"] = 'Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.114 Mobile Safari/537.36'
+    dcap["phantomjs.page.settings.disk-cache"] = True
     driver = webdriver.PhantomJS(executable_path='lib/phantomjs.exe', desired_capabilities=dcap)
     return driver
 
@@ -82,14 +85,22 @@ def tyc_data(driver, url, keyword, maping):
     fails = 1
     while fails < 31:
         try:
+            driver.set_page_load_timeout(10)
+            driver.set_script_timeout(10)
+            driver.get("about:blank")
             driver.get(url)
             break
         except Exception as e:
             print e
-            print 'error wait 5 mins tyc_data1'
-            time.sleep(300)
-            driver.close()
-            driver = browserdriver()
+            print 'error wait 30 secs tyc_data1'
+            try:
+                driver.close()
+                driver.quit()
+            except Exception as e:
+                print e
+            finally:
+                driver = browserdriver()
+            time.sleep(30)
     else:
         raise
     try:
@@ -111,15 +122,22 @@ def tyc_data(driver, url, keyword, maping):
             fails = 1
             while fails < 31:
                 try:
+                    driver.set_page_load_timeout(10)
+                    driver.set_script_timeout(10)
+                    driver.get("about:blank")
                     driver.get(company_url)
                     break
                 except Exception as e:
                     print e
-                    print 'error wait 5 mins tyc_data2'
-                    time.sleep(300)
-                    driver.close()
-                    driver = browserdriver()
-
+                    print 'error wait 30 secs tyc_data2'
+                    try:
+                        driver.close()
+                        driver.quit()
+                    except Exception as e:
+                        print e
+                    finally:
+                        driver = browserdriver()
+                    time.sleep(30)
             else:
                 raise
             try:
@@ -137,20 +155,20 @@ def tyc_data(driver, url, keyword, maping):
                 bscop = bsocplist[0].get_text() if len(bsocplist) > 0 else None
                 binfo = [
                     cmname,
-                    reginfo[3].get_text(),
-                    reginfo[1].get_text(),
-                    regdecode(maping, reginfo[7].get_text()),
-                    regdecode(maping, reginfo[5].get_text()),
-                    regdecode(maping, reginfo[23].get_text()),
-                    reginfo[13].get_text(),
-                    reginfo[15].get_text(),
-                    reginfo[17].get_text(),
-                    reginfo[11].get_text(),
-                    reginfo[19].get_text(),
-                    reginfo[9].get_text(),
-                    reginfo[21].get_text(),
-                    reginfo[25].get_text(),
-                    reginfo[27].get_text(),
+                    reginfo[3].get_text() if len(reginfo[3].get_text()) > 0 else None,
+                    reginfo[1].get_text() if len(reginfo[1].get_text()) > 0 else None,
+                    regdecode(maping, reginfo[7].get_text()) if len(reginfo[7].get_text()) > 0 else None,
+                    regdecode(maping, reginfo[5].get_text()) if len(reginfo[5].get_text()) > 0 else None,
+                    regdecode(maping, reginfo[23].get_text()) if len(reginfo[23].get_text()) > 0 else None,
+                    reginfo[13].get_text() if len(reginfo[13].get_text()) > 0 else None,
+                    reginfo[15].get_text() if len(reginfo[15].get_text()) > 0 else None,
+                    reginfo[17].get_text() if len(reginfo[17].get_text()) > 0 else None,
+                    reginfo[11].get_text() if len(reginfo[11].get_text()) > 0 else None,
+                    reginfo[19].get_text() if len(reginfo[19].get_text()) > 0 else None,
+                    reginfo[9].get_text() if len(reginfo[9].get_text()) > 0 else None,
+                    reginfo[21].get_text() if len(reginfo[21].get_text()) > 0 else None,
+                    reginfo[25].get_text() if len(reginfo[25].get_text()) > 0 else None,
+                    reginfo[27].get_text() if len(reginfo[27].get_text()) > 0 else None,
                     bscop
                 ]
                 for x in binfo:
@@ -167,14 +185,22 @@ def gettycfont(driver):
     fails = 1
     while fails < 31:
         try:
+            driver.set_page_load_timeout(10)
+            driver.set_script_timeout(10)
+            driver.get("about:blank")
             driver.get("https://m.tianyancha.com/")
             break
         except Exception as e:
             print e
-            print 'error wait 5 mins getfont1'
-            time.sleep(300)
-            driver.close()
-            driver = browserdriver()
+            print 'error wait 30 secs getfont1'
+            try:
+                driver.close()
+                driver.quit()
+            except Exception as e:
+                print e
+            finally:
+                driver = browserdriver()
+                time.sleep(30)
     else:
         raise
     pagesouup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -186,14 +212,22 @@ def gettycfont(driver):
             fails = 1
             while fails < 31:
                 try:
+                    driver.set_page_load_timeout(10)
+                    driver.set_script_timeout(10)
+                    driver.get("about:blank")
                     driver.get(csshref)
                     break
                 except Exception as e:
                     print e
-                    print 'error wait 5 mins getfont2'
-                    time.sleep(300)
-                    driver.close()
-                    driver = browserdriver()
+                    print 'error wait 30 secs getfont2'
+                    try:
+                        driver.close()
+                        driver.quit()
+                    except Exception as e:
+                        print e
+                    finally:
+                        driver = browserdriver()
+                    time.sleep(30)
             else:
                 raise
             csscode = driver.page_source
@@ -212,14 +246,22 @@ def fonttest(driver, fontfile):
     fails = 1
     while fails < 31:
         try:
+            driver.set_page_load_timeout(10)
+            driver.set_script_timeout(10)
+            driver.get("about:blank")
             driver.get("https://m.tianyancha.com/")  
             break
         except Exception as e:
             print e
-            print 'error wait 5 mins fonttest1'
-            time.sleep(300)
-            driver.close()
-            driver = browserdriver()
+            print 'error wait 30 secs fonttest1'
+            try:
+                driver.close()
+                driver.quit()
+            except Exception as e:
+                print e
+            finally:
+                driver = browserdriver()
+            time.sleep(30)
     else:
         raise
     pagesouup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -231,14 +273,22 @@ def fonttest(driver, fontfile):
             fails = 1
             while fails < 31:
                 try:
+                    driver.set_page_load_timeout(10)
+                    driver.set_script_timeout(10)
+                    driver.get("about:blank")
                     driver.get(csshref)
                     break
                 except Exception as e:
                     print e
-                    print 'error wait 5 mins fonttest2'
-                    time.sleep(300)
-                    driver.close()
-                    driver = browserdriver()
+                    print 'error wait 30 secs fonttest2'
+                    try:
+                        driver.close()
+                        driver.quit()
+                    except Exception as e:
+                        print e
+                    finally:
+                        driver = browserdriver()
+                    time.sleep(30)
             else:
                 raise
             csscode = driver.page_source
