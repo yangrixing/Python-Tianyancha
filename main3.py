@@ -1,7 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding:utf-8 -*-
 
 import xlrd, arrow, urllib, re, os, requests
+from urllib.request import urlretrieve
+from urllib.parse import quote
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -244,7 +246,7 @@ def gettycfont():
             if recode[0] is not None:
                 print('download font')
                 fonturl = "https://static.tianyancha.com/m-require-js/public/fonts/"+recode[0]
-                urllib.urlretrieve(fonturl, recode[0])
+                urlretrieve(fonturl, recode[0])
             print(recode[0])
             return getmaping(recode[0]), recode[0]
         else:
@@ -354,7 +356,7 @@ def main(logfile, excelfile):
                 print("encrypt not change")
             else:
                 maping, fontname = gettycfont()
-            keyword = urllib.quote(cmyname.encode("utf-8"))
+            keyword = quote(cmyname.encode("utf-8"))
             tycurl = "https://m.tianyancha.com/search?key=" + keyword + "&checkFrom=searchBox"
             binfo = tyc_data(driver, tycurl, cmyname, maping)
             if binfo is None:
