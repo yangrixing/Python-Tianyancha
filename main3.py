@@ -282,7 +282,7 @@ def fonttest(fontfile):
                 raise
             recode = re.findall(r"\btyc-num-\w*.ttf", csscode)
             if recode[0] is not None:
-                print recode[0]
+                print(recode[0])
                 if recode[0] == fontfile:
                     return True
                 else:
