@@ -177,7 +177,7 @@ def tyc_data(driver, url, keyword, maping):
                     for dw in dw_list:
                         dwinfo += dw.get_text() + ","
                 bscop = bsocplist[0].get_text() if len(bsocplist) > 0 else None
-                if (reginfo[11].get_text().encode('utf-8')) == "民办非企业单位":
+                if (reginfo[11].get_text()) == "民办非企业单位":
                     binfo = [
                         cmname,
                         noinfo,
