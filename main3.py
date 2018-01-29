@@ -162,6 +162,20 @@ def tyc_data(driver, url, keyword, maping):
                 binfo = []
                 reginfo = tycdata.select("div.item-line > span")
                 bsocplist = tycdata.select("div.item-line > span > span > span.hidden > div")
+                gdinfo = ''
+                dwinfo = ''
+                gdlist = tycdata.select(
+                    "div > div#_container_holder > div > div.content-container > div > div > a.in-block"
+                )
+                if(len(gdlist) != 0):
+                    for gdname in gdlist:
+                        gdinfo += gdname.get_text() + ","
+                dw_list = tycdata.select(
+                    "div.content-container > div > a > span.text-click-color"
+                )
+                if(len(dw_list) != 0):
+                    for dw in dw_list:
+                        dwinfo += dw.get_text() + ","
                 bscop = bsocplist[0].get_text() if len(bsocplist) > 0 else None
                 if (reginfo[11].get_text().encode('utf-8')) == "民办非企业单位":
                     binfo = [
@@ -203,6 +217,14 @@ def tyc_data(driver, url, keyword, maping):
                         reginfo[27].get_text() if len(reginfo[27].get_text()) > 0 else None,
                         bscop
                     ]
+                if(len(gdinfo) != 0):
+                    binfo.append(gdinfo)
+                else:
+                    print("无股东信息")
+                if(len(dw_list) != 0):
+                    binfo.append(dwinfo)
+                else:
+                    print("暂无对外投资信息")
                 for x in binfo:
                     print(x)
                 return binfo
@@ -341,7 +363,7 @@ def main(logfile, excelfile):
     ws = wb.active
     ws.append([
         "公司名称", "公司状态", "法人名称", "注册资本", "注册时间", "核准时间", "工商注册号", "组织机构代码", "信用识别代码",
-        "公司类型", "纳税人识别号", "行业", "营业期限", "登记机关", "注册地址", "经营范围"
+        "公司类型", "纳税人识别号", "行业", "营业期限", "登记机关", "注册地址", "经营范围", "股东", "对外投资"
     ])
     """
     keyword = "宁波凌科教育培训学校"
