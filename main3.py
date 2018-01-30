@@ -95,7 +95,14 @@ def request(url):
         "Referer": "https://www.baidu.com/",
         "User-Agent": "Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.114 Mobile Safari/537.36"
     }
-    r = requests.get(url, headers=header)
+    fail = 1
+    while fail < 31:
+        try:
+            r = requests.get(url, headers=header, timeout=10)
+            break
+        except:
+            fail += 1
+            time.sleep(5)
     return r.text
 
 
@@ -220,10 +227,12 @@ def tyc_data(driver, url, keyword, maping):
                 if(len(gdinfo) != 0):
                     binfo.append(gdinfo)
                 else:
-                    print("无股东信息")
+                    binfo.append('暂无')
+                    print("暂无股东信息")
                 if(len(dw_list) != 0):
                     binfo.append(dwinfo)
                 else:
+                    binfo.append('暂无')
                     print("暂无对外投资信息")
                 for x in binfo:
                     print(x)
