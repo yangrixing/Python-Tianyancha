@@ -30,6 +30,37 @@ def exceldata(filename, n):
         print(e)
         return None
 
+
+def relation(filename):
+    """
+    processing relations
+    :param filename: Excel filename
+    :return: relations
+    """
+    relations = {}
+    keys = []
+    try:
+        book = xlrd.open_workbook(filename)
+        sheets = book.sheets()
+        sheet = sheets[0]
+        for r in range(sheet.nrows):
+            cmp = sheet.cell(r, 0).value
+            share = sheet.cell(r, 1).value
+            if r != 0:
+                relations.setdefault(cmp, share)
+        print("去空前：", len(relations))
+        for key in relations.keys():
+            if(len(relations[key]) == 0):
+                keys.append(key)
+        for empty_key in keys:
+            relations.pop(empty_key)
+        print("去空后：", len(relations))
+        return relations
+    except Exception as e:
+        print(e)
+        return None
+
+
 # clean data
 def cleandata(datalist, dictname, splitstat):
     """
@@ -66,7 +97,7 @@ def cleandata(datalist, dictname, splitstat):
 
 
 # create network graph
-def creategraph(picname, dict1, dict2):
+def creategraph(picname, relation, dict1, dict2):
     pass
 
 
@@ -75,4 +106,4 @@ if __name__ == "__main__":
     # shareholder_list_raw = exceldata("graph.xlsx", 1)
     # cleandata(cmp_list_raw, "cmpdict.txt", False)
     # cleandata(shareholder_list_raw, "shareholder.txt", True)
-    pass
+    relations = relation("graph.xlsx")
