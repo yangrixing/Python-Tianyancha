@@ -15,6 +15,7 @@ def exceldata(filename, n):
     :param filename: excel filename
     :return: None
     """
+
     try:
         book = xlrd.open_workbook(filename)
         sheets = book.sheets()
@@ -32,26 +33,46 @@ def exceldata(filename, n):
 # clean data
 def cleandata(datalist, dictname, splitstat):
     """
-    clean data
-    :param datalist: datalist
-    :return: dict file
+    clen xlsx data
+    :param datalist: data list
+    :param dictname: dict txt name
+    :param splitstat: bool cut or not
+    :return: dict txt file
     """
+
+    dataset_share = []
+    dataset_share_uniq = []
+    dataset_cmp_uniq = []
     with open(dictname, "w") as F:
-        for datarow in datalist:
-            if splitstat:
+        if splitstat:
+            print("处理股东信息")
+            for datarow in datalist:
                 for data in datarow.split(","):
                     if len(data) != 0:
-                        F.writelines(data + "\n")
-                    else:
-                        pass
-            else:
-                F.writelines(datarow + "\n")
-    F.close()
+                        dataset_share.append(data + "\n")
+            print("去重前：", len(dataset_share))
+            dataset_share_uniq = sorted(set(dataset_share), key=dataset_share.index)
+            print("去重后：", len(dataset_share_uniq))
+            F.writelines(dataset_share_uniq)
+        else:
+            print("处理公司信息")
+            dataset_cmp_uniq = sorted(set(datalist), key=datalist.index)
+            print("去重前：", len(datalist))
+            print("去重后：", len(dataset_cmp_uniq))
+            for row in dataset_cmp_uniq:
+                F.writelines(row + "\n")
+        print("写入完毕，关闭文件")
+        F.close()
 
+
+# create network graph
+def creategraph(picname, dict1, dict2):
+    pass
 
 
 if __name__ == "__main__":
-    cmp_list_raw = exceldata("graph.xlsx", 0)
-    shareholder_list_raw = exceldata("graph.xlsx", 1)
-    cleandata(cmp_list_raw, "cmpdict.txt", False)
-    cleandata(shareholder_list_raw, "shareholder.txt", True)
+    # cmp_list_raw = exceldata("graph.xlsx", 0)
+    # shareholder_list_raw = exceldata("graph.xlsx", 1)
+    # cleandata(cmp_list_raw, "cmpdict.txt", False)
+    # cleandata(shareholder_list_raw, "shareholder.txt", True)
+    pass
