@@ -18,12 +18,27 @@ def exceldata(filename, n):
         book = xlrd.open_workbook(filename)
         sheets = book.sheets()
         sheet = sheets[n]
-        print(sheet)
         return sheet
     except Exception as e:
         print(e)
         return None
 
 
+def cleandata(sheet, datalist, dictname, splitstate):
+    """
+    clean xlsx data and create dict
+    :param sheet: excel sheet
+    :param datalist: data row
+    :param dictname: dict txt file name
+    :param splitstate: rows string splite switch
+    :return: None
+    """
+    with open(dictname, "w") as F:
+        if splitstate:
+            print("处理带分割符信息")
+            
+
+
+
 if __name__ == "__main__":
-    exceldata("cxgs.xlsx", 0)
+    exceldata("cxgs.xlsx", 1)
