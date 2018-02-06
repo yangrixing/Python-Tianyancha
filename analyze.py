@@ -33,12 +33,26 @@ def cleandata(sheet, datalist, dictname, splitstate):
     :param splitstate: rows string splite switch
     :return: None
     """
+    data = []
+    data_uniq = []
     with open(dictname, "w") as F:
         if splitstate:
             print("处理带分割符信息")
-            
+            for datarow in range(sheet.nrows):
+                # 处理表头
+                if datarow != 0:
+                    col = sheet.cell(datarow, datalist).value.split(",")
+                    for word in col:
+                        if word != "" and word != "暂无":
+                            data.append(word)
+            data_uniq = sorted(set(data), key=data.index)
+            print("信息去重")
+            for word in data_uniq:
+                F.writelines(word + "\n")
+    F.close()
 
 
 
 if __name__ == "__main__":
-    exceldata("cxgs.xlsx", 1)
+    sheet = exceldata("result.xlsx", 0)
+    cleandata(sheet, 16, "share_dict.txt", True)
