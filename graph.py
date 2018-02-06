@@ -90,7 +90,7 @@ def coverelation(relations):
 # clean data
 def cleandata(datalist, dictname, splitstat):
     """
-    clen xlsx data
+    clean xlsx data
     :param datalist: data list
     :param dictname: dict txt name
     :param splitstat: bool cut or not
