@@ -8,6 +8,7 @@
 import xlrd
 from openpyxl.workbook import Workbook
 import arrow
+import re
 
 
 
@@ -45,8 +46,9 @@ def cleandata(sheet, datalist, dictname, splitstate):
             for datarow in range(sheet.nrows):
                 # 处理表头
                 if datarow != 0:
-                    col = sheet.cell(datarow, datalist).value.split(",")
+                    col = (re.split(r"[.*?,]", sheet.cell(datarow, datalist).value))
                     for word in col:
+                        print(word)
                         if word != "" and word != "暂无":
                             data.append(word)
             print("信息去重")
@@ -92,7 +94,7 @@ def analyze(dictfile, sheet, row, outputfile, sheetkeys, headers):
 if __name__ == "__main__":
     sheet = exceldata("result.xlsx", 0)
     # 股东信息字典生成
-    # cleandata(sheet, 16, "share_dict.txt", True)
+    cleandata(sheet, 16, "share_dict.txt", True)
     # 法人名称字典
     # cleandata(sheet, 2, "legal_dict.txt", False)
     # 对外投资字典
@@ -100,6 +102,6 @@ if __name__ == "__main__":
     # 公司名称
     # cleandata(sheet, 1, "cmp_dict.txt", False)
     # 分析
-    sheetkeyslist = [0]
-    sheetheader = ['股东名称', '参股公司数量', '参股公司名单']
-    analyze("share_dict.txt", sheet, 16, "test.xlsx", sheetkeyslist, sheetheader)
+    # sheetkeyslist = [0]
+    # sheetheader = ['股东名称', '参股公司数量', '参股公司名单']
+    # analyze("share_dict.txt", sheet, 16, "test.xlsx", sheetkeyslist, sheetheader)
