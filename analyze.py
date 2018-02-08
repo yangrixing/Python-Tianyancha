@@ -46,9 +46,9 @@ def cleandata(sheet, datalist, dictname, splitstate):
             for datarow in range(sheet.nrows):
                 # 处理表头
                 if datarow != 0:
-                    col = (re.split(r"[.*?,]", sheet.cell(datarow, datalist).value))
+                    col = sheet.cell(datarow, datalist).value.split(",")
+                    print(col)
                     for word in col:
-                        print(word)
                         if word != "" and word != "暂无":
                             data.append(word)
             print("信息去重")
@@ -102,6 +102,6 @@ if __name__ == "__main__":
     # 公司名称
     # cleandata(sheet, 1, "cmp_dict.txt", False)
     # 分析
-    # sheetkeyslist = [0]
-    # sheetheader = ['股东名称', '参股公司数量', '参股公司名单']
-    # analyze("share_dict.txt", sheet, 16, "test.xlsx", sheetkeyslist, sheetheader)
+    #sheetkeyslist = [0]
+    #sheetheader = ['股东名称', '参股公司数量', '参股公司名单']
+    #analyze("share_dict.txt", sheet, 16, "test.xlsx", sheetkeyslist, sheetheader)
