@@ -176,13 +176,13 @@ def tyc_data(driver, url, keyword, maping):
                 )
                 if(len(gdlist) != 0):
                     for gdname in gdlist:
-                        gdinfo += gdname.get_text() + ","
+                        gdinfo += gdname.get_text() + "|,|"
                 dw_list = tycdata.select(
                     "div.content-container > div > a > span.text-click-color"
                 )
                 if(len(dw_list) != 0):
                     for dw in dw_list:
-                        dwinfo += dw.get_text() + ","
+                        dwinfo += dw.get_text() + "|,|"
                 bscop = bsocplist[0].get_text() if len(bsocplist) > 0 else None
                 if (reginfo[11].get_text()) == "民办非企业单位":
                     binfo = [
@@ -276,7 +276,7 @@ def gettycfont():
             recode = re.findall(r"\btyc-num-\w*.ttf", csscode)
             if recode[0] is not None:
                 print('download font')
-                fonturl = "https://static.tianyancha.com/m-require-js/public/fonts/"+recode[0]
+                fonturl = "https://static.tianyancha.com/m-require-js/public/fonts/" + recode[0]
                 urlretrieve(fonturl, recode[0])
             print(recode[0])
             return getmaping(recode[0]), recode[0]
