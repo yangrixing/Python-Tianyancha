@@ -189,6 +189,7 @@ def tyc_data(driver, url, keyword, maping):
                         cmname,
                         noinfo,
                         reginfo[1].get_text() if len(reginfo[1].get_text()) > 0 else None,
+                        # 修改填充项
                         # regdecode(maping, reginfo[3].get_text()) if len(reginfo[3].get_text()) > 0 else None,
                         # regdecode(maping, reginfo[5].get_text()) if len(reginfo[5].get_text()) > 0 else None,
                         reginfo[3].get_text() if len(reginfo[3].get_text()) > 0 else None,
