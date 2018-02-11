@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # @Time    : 2018/2/5 15:56
-# @Author  : Derek.S
+# @Author  :
 # @Site    : 
 # @File    : analyze.py
 
