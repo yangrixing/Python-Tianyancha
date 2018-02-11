@@ -1,14 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # @Time    : 2018/2/4 13:38
-# @Author  : Derek.S
+# @Author  :
 # @Site    : 
 # @File    : graph.py
 
 import xlrd
 import networkx as nx
 import matplotlib.pyplot as plt
-import codecs
+# import codecs
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -22,6 +22,7 @@ def exceldata(filename, n):
     """
     open excel file read data
     :param filename: excel filename
+    :pparam n: row number
     :return: None
     """
 
@@ -54,7 +55,7 @@ def relation(filename):
         sheet = sheets[0]
         for r in range(sheet.nrows):
             cmp = sheet.cell(r, 0).value
-            share = sheet.cell(r, 1).value
+            share = sheet.cell(r, 16).value
             shares = []
             for word in (share.split(",")):
                 if word != "" and word != "暂无":
@@ -127,32 +128,29 @@ def creategraph(picname, relation, dict1, dict2):
     colors = ['red', 'green', 'blue', 'yellow']
     cmpnode = []
     sharenode = []
-    with open(dict1, "r", encoding="utf8") as f1:
+    with open(dict1, "r") as f1:
         for node in f1.readlines():
             cmpnode.append(node.split("\n")[0])
     f1.close()
-    with open(dict2, "r", encoding="utf8") as f2:
+    with open(dict2, "r") as f2:
         for node in f2.readlines():
             sharenode.append(node.split("\n")[0])
     f2.close()
     DG = nx.DiGraph()
     print("节点较多，需要一定时间运行")
-    DG.add_nodes_from(cmpnode)
-    DG.add_nodes_from(sharenode)
-    DG.add_edges_from(relation)
-    #DG.add_nodes_from(['哈哈'])
-    #DG.add_nodes_from(['呵呵'])
-    #DG.add_edges_from([('哈哈', '呵呵')])
+    DG.add_nodes_from(cmpnode[0:300])
+    DG.add_nodes_from(sharenode[0:300])
+    DG.add_edges_from(relation[0:300])
     nx.draw(DG, with_labels=True, node_size=300, font_size=8, node_color=colors)
     fig = plt.gcf()
-    fig.set_size_inches(30, 30)
+    fig.set_size_inches(35, 35)
     fig.savefig(picname, dpi=600)
 
 
 if __name__ == "__main__":
-    excelfname = "graph.xlsx"
+    excelfname = "test2.xlsx"
     cmp_list_raw = exceldata(excelfname, 0)
-    shareholder_list_raw = exceldata(excelfname, 1)
+    shareholder_list_raw = exceldata(excelfname, 16)
     cleandata(cmp_list_raw, "cmpdict.txt", False)
     cleandata(shareholder_list_raw, "shareholder.txt", True)
     relations = relation(excelfname)
