@@ -8,8 +8,6 @@
 import xlrd
 from openpyxl.workbook import Workbook
 import arrow
-import re
-
 
 
 def exceldata(filename, n):
