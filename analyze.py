@@ -68,6 +68,16 @@ def cleandata(sheet, datalist, dictname, splitstate):
 
 
 def analyze(dictfile, sheet, row, outputfile, sheetkeys, headers):
+    """
+    分析关系
+    :param dictfile: 字典文件
+    :param sheet: Excel数据表
+    :param row: 数据行
+    :param outputfile: 输出文件名
+    :param sheetkeys: List
+    :param headers: 标题行
+    :return:
+    """
     keys = []
     with open(dictfile, "r") as R:
         for dictrow in R.readlines():
@@ -84,9 +94,11 @@ def analyze(dictfile, sheet, row, outputfile, sheetkeys, headers):
             if datarow != 0:
                 col = sheet.cell(datarow, row).value
                 if dictkey in col:
-                    for rowkey in sheetkeys:
-                        resultstr += (sheet.cell(datarow, rowkey).value + ",") # 获取符合条件的对应列数据
-                        count += 1
+                    # print(len(dictkey), len(col))
+                    if len(dictkey) == len(col):
+                        for rowkey in sheetkeys:
+                            resultstr += (sheet.cell(datarow, rowkey).value + ",") # 获取符合条件的对应列数据
+                            count += 1
         result = [dictkey, count, resultstr]
         ws.append(result)
     wb.save(filename=outputfile)
@@ -95,14 +107,14 @@ def analyze(dictfile, sheet, row, outputfile, sheetkeys, headers):
 if __name__ == "__main__":
     sheet = exceldata("result.xlsx", 0)
     # 股东信息字典生成
-    cleandata(sheet, 16, "share_dict.txt", True)
+    # cleandata(sheet, 16, "share_dict.txt", True)
     # 法人名称字典
-    cleandata(sheet, 2, "legal_dict.txt", False)
+    # cleandata(sheet, 2, "legal_dict.txt", False)
     # 对外投资字典
-    cleandata(sheet, 17, "invest_dict.txt", True)
+    # cleandata(sheet, 17, "invest_dict.txt", True)
     # 公司名称
-    cleandata(sheet, 0, "cmp_dict.txt", False)
+    # cleandata(sheet, 0, "cmp_dict.txt", False)
     # 分析
     sheetkeyslist = [0]
-    sheetheader = ['法人名称', '拥有公司数量', '公司名单']
-    analyze("legal_dict.txt", sheet, 2, "test1.xlsx", sheetkeyslist, sheetheader)
+    sheetheader = ['股东名称', '拥有公司数量', '公司名单']
+    analyze("share_dict.txt", sheet, 2, "test1.xlsx", sheetkeyslist, sheetheader)
