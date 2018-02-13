@@ -99,6 +99,13 @@ def analyze(dictfile, sheet, row, outputfile, sheetkeys, headers):
                         for rowkey in sheetkeys:
                             resultstr += (sheet.cell(datarow, rowkey).value + ",") # 获取符合条件的对应列数据
                             count += 1
+                    else:
+                        for word in col.split("|,|"):
+                            if dictkey in word:
+                                if len(dictkey) == len(word):
+                                    for rowkey in sheetkeys:
+                                        resultstr += (sheet.cell(datarow, rowkey).value + ",")  # 获取符合条件的对应列数据
+                                        count += 1
         result = [dictkey, count, resultstr]
         ws.append(result)
     wb.save(filename=outputfile)
@@ -116,5 +123,5 @@ if __name__ == "__main__":
     # cleandata(sheet, 0, "cmp_dict.txt", False)
     # 分析
     sheetkeyslist = [0]
-    sheetheader = ['股东名称', '拥有公司数量', '公司名单']
-    analyze("share_dict.txt", sheet, 2, "test1.xlsx", sheetkeyslist, sheetheader)
+    sheetheader = ['股东名称', '投资公司数量', '公司名单']
+    analyze("share_dict.txt", sheet, 16, "test1.xlsx", sheetkeyslist, sheetheader)
