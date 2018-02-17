@@ -122,6 +122,7 @@ if __name__ == "__main__":
     # 公司名称
     # cleandata(sheet, 0, "cmp_dict.txt", False)
     # 分析
-    sheetkeyslist = [17]
-    sheetheader = ['公司名称', '投资公司数量', '投资公司名单']
-    analyze("cmp_dict.txt", sheet, 0, "test1.xlsx", sheetkeyslist, sheetheader)
+    sheetkeyslist = [0]  # 数据表内
+    sheetheader = ['股东名称', '参股公司数量', '参股公司名单']
+    # 参数（字典，Excel表对象，与字典对应的Excel数据列，输出文件名，数据表内需要分析关联的数据列名，输出文件标题行）
+    analyze("share_dict.txt", sheet, 16, "test1.xlsx", sheetkeyslist, sheetheader)
