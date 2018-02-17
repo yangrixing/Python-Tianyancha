@@ -144,15 +144,15 @@ def tyc_data(driver, url, keyword, maping):
                 reginfo = tycdata.select("div.item-line > span")
                 bsocplist = tycdata.select("div.item-line > span > span > span.hidden > div")
                 bscop = bsocplist[0].get_text() if len(bsocplist) > 0 else None
-                if (reginfo[11].get_text().encode('utf-8')) == "民办非企业单位":
+                if (reginfo[11].get_text()) == "民办非企业单位" or (reginfo[11].get_text()) == "社会团体":
                     binfo = [
                         cmname,
                         noinfo,
                         reginfo[1].get_text() if len(reginfo[1].get_text()) > 0 else None,
                         # regdecode(maping, reginfo[3].get_text()) if len(reginfo[3].get_text()) > 0 else None,
                         # regdecode(maping, reginfo[5].get_text()) if len(reginfo[5].get_text()) > 0 else None,
-                        reginfo[3].get_text() if len(reginfo[3].get_text()) > 0 else None,
                         reginfo[5].get_text() if len(reginfo[5].get_text()) > 0 else None,
+                        reginfo[3].get_text() if len(reginfo[3].get_text()) > 0 else None,
                         noinfo,
                         reginfo[7].get_text(),
                         noinfo,
@@ -281,8 +281,13 @@ def getmaping(fontfile):
     im.show()
     im.save("t.png")
     fontimage = Image.open("t.png")
-    numlist = tuple(pytesseract.image_to_string(fontimage))
+    numlistget = tuple(pytesseract.image_to_string(fontimage))
     print pytesseract.image_to_string(fontimage)
+    print numlistget
+    numlist = []
+    for numb in numlistget:
+        if numb != " ":
+            numlist.append(numb)
     mapfont = {
         '0': str(numlist[0]),
         '1': str(numlist[1]),

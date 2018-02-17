@@ -122,6 +122,6 @@ if __name__ == "__main__":
     # 公司名称
     # cleandata(sheet, 0, "cmp_dict.txt", False)
     # 分析
-    sheetkeyslist = [0]
-    sheetheader = ['股东名称', '投资公司数量', '公司名单']
-    analyze("share_dict.txt", sheet, 16, "test1.xlsx", sheetkeyslist, sheetheader)
+    sheetkeyslist = [16]
+    sheetheader = ['公司名称', '投资公司数量', '投资公司名单']
+    analyze("cmp_dict.txt", sheet, 16, "test1.xlsx", sheetkeyslist, sheetheader)
