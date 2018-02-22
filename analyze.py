@@ -99,14 +99,14 @@ def analyze(dictfile, sheet, row, outputfile, sheetkeys, headers):
                     if len(dictkey) == len(col):
                         for rowkey in sheetkeys:
                             resultlist.append(sheet.cell(datarow, rowkey).value) # 获取符合条件的对应列数据
-                            count += 1
                     else:
                         for word in col.split("|,|"):
                             if dictkey in word:
                                 if len(dictkey) == len(word):
                                     for rowkey in sheetkeys:
                                         resultlist.append(sheet.cell(datarow, rowkey).value)  # 获取符合条件的对应列数据
-                                        count += 1
+        resultlist = list(set(resultlist))
+        count = len(resultlist)
         for resultone in resultlist:
             resultstr += resultone + ","
         result = [dictkey, count, resultstr]
