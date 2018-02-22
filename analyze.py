@@ -89,6 +89,7 @@ def analyze(dictfile, sheet, row, outputfile, sheetkeys, headers):
 
     for dictkey in keys:
         count = 0
+        resultlist = []
         resultstr = ""
         for datarow in range(sheet.nrows):
             if datarow != 0:
@@ -97,15 +98,17 @@ def analyze(dictfile, sheet, row, outputfile, sheetkeys, headers):
                     # print(len(dictkey), len(col))
                     if len(dictkey) == len(col):
                         for rowkey in sheetkeys:
-                            resultstr += (sheet.cell(datarow, rowkey).value + ",") # 获取符合条件的对应列数据
+                            resultlist.append(sheet.cell(datarow, rowkey).value) # 获取符合条件的对应列数据
                             count += 1
                     else:
                         for word in col.split("|,|"):
                             if dictkey in word:
                                 if len(dictkey) == len(word):
                                     for rowkey in sheetkeys:
-                                        resultstr += (sheet.cell(datarow, rowkey).value + ",")  # 获取符合条件的对应列数据
+                                        resultlist.append(sheet.cell(datarow, rowkey).value)  # 获取符合条件的对应列数据
                                         count += 1
+        for resultone in resultlist:
+            resultstr += resultone + ","
         result = [dictkey, count, resultstr]
         ws.append(result)
     wb.save(filename=outputfile)
@@ -125,4 +128,4 @@ if __name__ == "__main__":
     sheetkeyslist = [0]  # 数据表内
     sheetheader = ['股东名称', '参股公司数量', '参股公司名单']
     # 参数（字典，Excel表对象，与字典对应的Excel数据列，输出文件名，数据表内需要分析关联的数据列名，输出文件标题行）
-    analyze("share_dict.txt", sheet, 16, "test1.xlsx", sheetkeyslist, sheetheader)
+    analyze("share_dict.txt", sheet, 2, "test1.xlsx", sheetkeyslist, sheetheader)
