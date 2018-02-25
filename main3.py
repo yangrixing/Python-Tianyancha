@@ -2,7 +2,8 @@
 # -*- coding:utf-8 -*-
 
 import xlrd, arrow, urllib, re, os, requests
-from urllib.request import urlretrieve
+#from urllib.request import urlretrieve     #2018-02-25 SSL Error
+import urllib3
 from urllib.parse import quote
 from selenium import webdriver
 from bs4 import BeautifulSoup
@@ -15,7 +16,7 @@ from openpyxl.workbook import Workbook
 import random, time
 from PIL import Image, ImageFont, ImageDraw
 import pytesseract
-
+import os
 
 def openexcel(file):
     """
@@ -98,7 +99,7 @@ def request(url):
     fail = 1
     while fail < 31:
         try:
-            r = requests.get(url, headers=header, timeout=10)
+            r = requests.get(url, headers=header, timeout=10, verify=False)
             break
         except:
             fail += 1
@@ -278,7 +279,11 @@ def gettycfont():
             if recode[0] is not None:
                 print('download font')
                 fonturl = "https://static.tianyancha.com/m-require-js/public/fonts/" + recode[0]
-                urlretrieve(fonturl, recode[0])
+                #urlretrieve(fonturl, recode[0])
+                http = urllib3.PoolManager()
+                data = http.request('GET', fonturl)
+                with open(recode[0], 'wb') as ttffile:
+                    ttffile.write(data.data)
             print(recode[0])
             return getmaping(recode[0]), recode[0]
         else:
@@ -329,9 +334,10 @@ def getmaping(fontfile):
     dr = ImageDraw.Draw(im)
     font = ImageFont.truetype(fontfile, 32)
     dr.text((10, 10), text, font=font, fill="#000000")
-    im.show()
+    #im.show()
     im.save("t.png")
-    fontimage = Image.open("t.png")
+    print(os.getcwd())
+    fontimage = Image.open("t.png")   #lujing
     numlistget = tuple(pytesseract.image_to_string(fontimage))
     print(pytesseract.image_to_string(fontimage))
     print(numlistget)
