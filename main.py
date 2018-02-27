@@ -278,7 +278,7 @@ def getmaping(fontfile):
     dr = ImageDraw.Draw(im)
     font = ImageFont.truetype(fontfile, 32)
     dr.text((10, 10), text, font=font, fill="#000000")
-    im.show()
+    #im.show()
     im.save("t.png")
     fontimage = Image.open("t.png")
     numlistget = tuple(pytesseract.image_to_string(fontimage))
