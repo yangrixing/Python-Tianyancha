@@ -277,6 +277,8 @@ def gettycfont():
                 raise
             # 2018-05-10 修改字体获取
             recode = re.findall(r"https://.*tyc-num.ttf", csscode)
+            # 2018-05-10 增加字体路径及名称字符串用于检验
+            fontpath_name = re.findall(r"fonts/.*/.*/tyc-num.ttf", recode[0])
             if recode[0] is not None:
                 print('download font')
                 http = urllib3.PoolManager()
@@ -284,7 +286,7 @@ def gettycfont():
                 with open("tyc-num.ttf", 'wb') as ttffile:
                     ttffile.write(data.data)
             print(recode[0])
-            return getmaping("tyc-num.ttf"), "tyc-num.ttf"
+            return getmaping("tyc-num.ttf"), fontpath_name[0]
         else:
             pass
 
@@ -305,7 +307,7 @@ def fonttest(fontfile):
     csssheet = pagesouup.find_all("link", rel="stylesheet")
     for link in csssheet:
         csshref = link.get('href')
-        if 'main' in csshref:
+        if 'font' in csshref:
             print(csshref)
             fails = 1
             while fails < 31:
@@ -318,10 +320,11 @@ def fonttest(fontfile):
                     time.sleep(30)
             else:
                 raise
-            recode = re.findall(r"\btyc-num-\w*.ttf", csscode)
+            recode = re.findall(r"https://.*tyc-num.ttf", csscode)
             if recode[0] is not None:
                 print(recode[0])
-                if recode[0] == fontfile:
+                fontpath_name = re.findall(r"fonts/.*/.*/tyc-num.ttf", recode[0])
+                if fontpath_name[0] == fontfile:
                     return True
                 else:
                     return False
@@ -357,7 +360,6 @@ def getmaping(fontfile):
         '9': str(numlist[9]) if str(numlist[9]) != ' ' else '9',
         '.': str(numlist[10]) if str(numlist[10]) != ' ' else '.',
     }
-    print(mapfont)
     return mapfont
 
 
@@ -427,7 +429,7 @@ def main(logfile, excelfile):
 
 
 if __name__ == '__main__':
-    # logfile = 'log.txt'
-    # excel = 'cxgs.xlsx'
-    # main(logfile, excel)
-    getmaping("tyc-num.ttf")
+    logfile = 'log.txt'
+    excel = 'cxgs.xlsx'
+    main(logfile, excel)
+    #getmaping("tyc-num.ttf")
