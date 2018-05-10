@@ -262,7 +262,7 @@ def gettycfont():
     csssheet = pagesouup.find_all("link", rel="stylesheet")
     for link in csssheet:
         csshref = link.get('href')
-        if 'main' in csshref:
+        if 'font' in csshref:           # 2018-05-10 修改font抓取
             print(csshref)
             fails = 1
             while fails < 31:
@@ -275,17 +275,16 @@ def gettycfont():
                     time.sleep(30)
             else:
                 raise
-            recode = re.findall(r"\btyc-num-\w*.ttf", csscode)
+            # 2018-05-10 修改字体获取
+            recode = re.findall(r"https://.*tyc-num.ttf", csscode)
             if recode[0] is not None:
                 print('download font')
-                fonturl = "https://static.tianyancha.com/m-require-js/public/fonts/" + recode[0]
-                #urlretrieve(fonturl, recode[0])
                 http = urllib3.PoolManager()
-                data = http.request('GET', fonturl)
-                with open(recode[0], 'wb') as ttffile:
+                data = http.request('GET', recode[0])
+                with open("tyc-num.ttf", 'wb') as ttffile:
                     ttffile.write(data.data)
             print(recode[0])
-            return getmaping(recode[0]), recode[0]
+            return getmaping("tyc-num.ttf"), "tyc-num.ttf"
         else:
             pass
 
@@ -329,11 +328,11 @@ def fonttest(fontfile):
 
 
 def getmaping(fontfile):
-    text = r" 0 1 2 3 4 5 6 7 8 9 . "
-    im = Image.new("RGB", (1000, 100), (255, 255, 255))
+    text = r" 0 1 2 3 4 5 6 7 8 9 . 0"
+    im = Image.new("RGB", (1000, 1000), (255, 255, 255))
     dr = ImageDraw.Draw(im)
-    font = ImageFont.truetype(fontfile, 32)
-    dr.text((10, 10), text, font=font, fill="#000000")
+    font = ImageFont.truetype(fontfile, 48)
+    dr.text((100, 100), text, font=font, fill="#000000")
     #im.show()
     im.save("t.png")
     print(os.getcwd())
@@ -343,21 +342,22 @@ def getmaping(fontfile):
     print(numlistget)
     numlist = []
     for numb in numlistget:
-        if numb != " ":
-            numlist.append(numb)
+        numlist.append(numb)
+    # 2018-05-10 调整映射代码
     mapfont = {
-        '0': str(numlist[0]),
-        '1': str(numlist[1]),
-        '2': str(numlist[2]),
-        '3': str(numlist[3]),
-        '4': str(numlist[4]),
-        '5': str(numlist[5]),
-        '6': str(numlist[6]),
-        '7': str(numlist[7]),
-        '8': str(numlist[8]),
-        '9': str(numlist[9]),
-        '.': str(numlist[10])
+        '0': str(numlist[0]) if str(numlist[0]) != ' ' else '0',
+        '1': str(numlist[1]) if str(numlist[1]) != ' ' else '1',
+        '2': str(numlist[2]) if str(numlist[2]) != ' ' else '2',
+        '3': str(numlist[3]) if str(numlist[3]) != ' ' else '3',
+        '4': str(numlist[4]) if str(numlist[4]) != ' ' else '4',
+        '5': str(numlist[5]) if str(numlist[5]) != ' ' else '5',
+        '6': str(numlist[6]) if str(numlist[6]) != ' ' else '6',
+        '7': str(numlist[7]) if str(numlist[7]) != ' ' else '7',
+        '8': str(numlist[8]) if str(numlist[8]) != ' ' else '8',
+        '9': str(numlist[9]) if str(numlist[9]) != ' ' else '9',
+        '.': str(numlist[10]) if str(numlist[10]) != ' ' else '.',
     }
+    print(mapfont)
     return mapfont
 
 
@@ -427,6 +427,7 @@ def main(logfile, excelfile):
 
 
 if __name__ == '__main__':
-    logfile = 'log.txt'
-    excel = 'cxgs.xlsx'
-    main(logfile, excel)
+    # logfile = 'log.txt'
+    # excel = 'cxgs.xlsx'
+    # main(logfile, excel)
+    getmaping("tyc-num.ttf")
