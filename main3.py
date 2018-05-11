@@ -137,10 +137,13 @@ def tyc_data(driver, url, keyword, maping):
     finally:
         source = driver.page_source.encode("utf-8")
         tycsoup = BeautifulSoup(source, 'html.parser')
+        # 2018-05-10 修改搜索查询到的公司名称选择器
         name = tycsoup.select(
-            "div > div > div > div > a.query_name > span > em")
+            "div > div > div > div > a.query_name > span > text > em")
         cmname = name[0].text if len(name) > 0 else None
         print(cmname)
+        for each_char in cmname:
+            chismiocr("tyc-num.ttf", each_char)
         if cmname == keyword:
             company_url = "https://m.tianyancha.com" + tycsoup.select('div > div > div > div > a.query_name')[0].get('href')
             print(company_url)
@@ -332,10 +335,10 @@ def fonttest(fontfile):
 
 def getmaping(fontfile):
     text = r" 0 1 2 3 4 5 6 7 8 9 . 0"
-    im = Image.new("RGB", (1000, 1000), (255, 255, 255))
+    im = Image.new("RGB", (1000, 100), (255, 255, 255))
     dr = ImageDraw.Draw(im)
     font = ImageFont.truetype(fontfile, 48)
-    dr.text((100, 100), text, font=font, fill="#000000")
+    dr.text((10, 10), text, font=font, fill="#000000")
     #im.show()
     im.save("t.png")
     print(os.getcwd())
@@ -347,18 +350,19 @@ def getmaping(fontfile):
     for numb in numlistget:
         numlist.append(numb)
     # 2018-05-10 调整映射代码
+    # 2018-05-11 再次调整映射代码
     mapfont = {
-        '0': str(numlist[0]) if str(numlist[0]) != ' ' else '0',
-        '1': str(numlist[1]) if str(numlist[1]) != ' ' else '1',
-        '2': str(numlist[2]) if str(numlist[2]) != ' ' else '2',
-        '3': str(numlist[3]) if str(numlist[3]) != ' ' else '3',
-        '4': str(numlist[4]) if str(numlist[4]) != ' ' else '4',
-        '5': str(numlist[5]) if str(numlist[5]) != ' ' else '5',
-        '6': str(numlist[6]) if str(numlist[6]) != ' ' else '6',
-        '7': str(numlist[7]) if str(numlist[7]) != ' ' else '7',
-        '8': str(numlist[8]) if str(numlist[8]) != ' ' else '8',
-        '9': str(numlist[9]) if str(numlist[9]) != ' ' else '9',
-        '.': str(numlist[10]) if str(numlist[10]) != ' ' else '.',
+        str(numlist[0]) if str(numlist[0]) != ' ' else '0' : '0',
+        str(numlist[1]) if str(numlist[1]) != ' ' else '1' : '1',
+        str(numlist[2]) if str(numlist[2]) != ' ' else '2' : '2',
+        str(numlist[3]) if str(numlist[3]) != ' ' else '3' : '3',
+        str(numlist[4]) if str(numlist[4]) != ' ' else '4' : '4',
+        str(numlist[5]) if str(numlist[5]) != ' ' else '5' : '5',
+        str(numlist[6]) if str(numlist[6]) != ' ' else '6' : '6',
+        str(numlist[7]) if str(numlist[7]) != ' ' else '7' : '7',
+        str(numlist[8]) if str(numlist[8]) != ' ' else '8' : '8',
+        str(numlist[9]) if str(numlist[9]) != ' ' else '9' : '9',
+        str(numlist[10]) if str(numlist[10]) != ' ' else '.' : '.'
     }
     return mapfont
 
@@ -372,14 +376,32 @@ def regdecode(mapfont, regstr):
         else:
             regdata.append(stra)
     return "".join(regdata)
-        
+
+
+def chismiocr(fontfile, chichar):
+    """
+    中文OCR识别
+    2015-05-10 新增
+    :param chichar: 单个字符
+    :return: 识别结果
+    """
+    print(chichar)
+    im = Image.new("RGB", (150, 150), (255, 255, 255))
+    dr = ImageDraw.Draw(im)
+    font = ImageFont.truetype(fontfile, 72)
+    dr.text((50, 50), chichar, font=font, fill="#000000")
+    im.save("c.png")
+    fontimage = Image.open("c.png")  # lujing
+    #2018-05-11 修改识别psm模式
+    chinesechar = pytesseract.image_to_string(fontimage, lang='chi_sim', config="-psm 10")
+    print(chinesechar)
+
 
 def main(logfile, excelfile):
     try:
         driver = browserdriver()
     except Exception as e:
         print(e)
-    now = arrow.now()
     maping, fontname = gettycfont()
     newexcelfile = "" + arrow.now().format("YYYY-MM-DD HH_mm_ss") + ".xlsx"
     wb = Workbook()
@@ -433,3 +455,4 @@ if __name__ == '__main__':
     excel = 'cxgs.xlsx'
     main(logfile, excel)
     #getmaping("tyc-num.ttf")
+    #chismiocr("tyc-num.ttf", "真")
