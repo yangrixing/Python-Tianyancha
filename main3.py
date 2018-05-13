@@ -146,12 +146,13 @@ def tyc_data(driver, url, keyword, maping):
             "div > div > div > div > a.query_name > span > text > em")
         cmname = name[0].text if len(name) > 0 else None
         print(cmname)
+        print("处理搜索结果中文加密信息")
         for each_char in cmname:
             chineseocr_result = chismiocr("tyc-num.ttf", each_char)
             if chineseocr_result:
                 cmname = cmname.replace(each_char, chineseocr_result)
         print(cmname)
-        print("处理中文加密信息")
+        print("处理经营范围中文加密信息")
         if cmname == keyword:
             company_url = "https://m.tianyancha.com" + tycsoup.select('div > div > div > div > a.query_name')[0].get('href')
             print(company_url)
@@ -349,35 +350,26 @@ def fonttest(fontfile):
 
 def getmaping(fontfile):
     print("处理数字加密映射")
-    text = r" 0 1 2 3 4 5 6 7 8 9 . 0"
-    im = Image.new("RGB", (1000, 100), (255, 255, 255))
-    dr = ImageDraw.Draw(im)
-    font = ImageFont.truetype(fontfile, 48)
-    dr.text((10, 10), text, font=font, fill="#000000")
-    #im.show()
-    im.save("t.png")
-    fontimage = Image.open("t.png")   #lujing
-    numlistget = tuple(pytesseract.image_to_string(fontimage))
-    numlist = []
-    for numb in numlistget:
-        numlist.append(numb)
+    text =['0','1','2','3','4','5','6','7','8','.']
+    numlist = {}
     # 2018-05-10 调整映射代码
     # 2018-05-11 再次调整映射代码
-    mapfont = {
-        '0' : str(numlist[0]) if str(numlist[0]) != ' ' else '0',
-        '1' : str(numlist[1]) if str(numlist[1]) != ' ' else '1',
-        '2' : str(numlist[2]) if str(numlist[2]) != ' ' else '2',
-        '3' : str(numlist[3]) if str(numlist[3]) != ' ' else '3',
-        '4' : str(numlist[4]) if str(numlist[4]) != ' ' else '4',
-        '5' : str(numlist[5]) if str(numlist[5]) != ' ' else '5',
-        '6' : str(numlist[6]) if str(numlist[6]) != ' ' else '6',
-        '7' : str(numlist[7]) if str(numlist[7]) != ' ' else '7',
-        '8' : str(numlist[8]) if str(numlist[8]) != ' ' else '8',
-        '9' : str(numlist[9]) if str(numlist[9]) != ' ' else '9',
-        '.' : str(numlist[10]) if str(numlist[10]) != ' ' else '.'
-    }
-    return mapfont
-
+    # 2018-05-13 调整识别代码
+    for each_math in text:
+        print(each_math)
+        im = Image.new("RGB", (500, 500), (255, 255, 255))
+        dr = ImageDraw.Draw(im)
+        font = ImageFont.truetype(fontfile, 400)
+        dr.text((20, 20), each_math, font=font, fill="#000000")
+        #im.show()
+        im.save("t.png")
+        fontimage = Image.open("t.png")   #lujing
+        num = pytesseract.image_to_string(fontimage, config="-psm 6")
+        if num == "":
+            numlist[each_math] = each_math
+        else:
+            numlist[each_math] = num
+    return numlist
 
 def regdecode(mapfont, regstr):
     strlist = list(regstr)
@@ -398,14 +390,14 @@ def chismiocr(fontfile, chichar):
     :return: 识别结果
     """
     # print(chichar)
-    im = Image.new("RGB", (150, 150), (255, 255, 255))
+    im = Image.new("RGB", (500, 500), (255, 255, 255))
     dr = ImageDraw.Draw(im)
-    font = ImageFont.truetype(fontfile, 72)
-    dr.text((50, 50), chichar, font=font, fill="#000000")
+    font = ImageFont.truetype(fontfile, 400)
+    dr.text((20, 20), chichar, font=font, fill="#000000")
     im.save("c.png")
     fontimage = Image.open("c.png")  # lujing
     # 2018-05-11 修改识别psm模式
-    chinesechar = pytesseract.image_to_string(fontimage, lang='chi_sim', config="-psm 10")
+    chinesechar = pytesseract.image_to_string(fontimage, lang='chi_sim', config="-psm 6")
     if chinesechar != "":
         return chinesechar
     else:
@@ -470,4 +462,4 @@ if __name__ == '__main__':
     excel = 'cxgs.xlsx'
     main(logfile, excel)
     #getmaping("tyc-num.ttf")
-    #chismiocr("tyc-num.ttf", "真")
+    #chismiocr("tyc-num.ttf", "0")
