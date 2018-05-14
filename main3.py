@@ -200,7 +200,7 @@ def tyc_data(driver, url, keyword, maping):
                 # 2018-05-11 新增经营范围解密
                 if bscop:
                     for each_char in bscop:
-                        chineseocr_result = chismiocr("tyc-num.ttf", each_char)
+                        chineseocr_result = chismiocrs("tyc-num.ttf", each_char)
                         if chineseocr_result:
                             bscop = bscop.replace(each_char, chineseocr_result)
                 if (reginfo[11].get_text()) == "民办非企业单位" or (reginfo[11].get_text()) == "社会团体":
@@ -398,6 +398,27 @@ def chismiocr(fontfile, chichar):
     fontimage = Image.open("c.png")  # lujing
     # 2018-05-11 修改识别psm模式
     chinesechar = pytesseract.image_to_string(fontimage, lang='chi_sim', config="-psm 6")
+    if chinesechar != "":
+        return chinesechar
+    else:
+        return None
+
+def chismiocrs(fontfile, chichar):
+    """
+    中文OCR识别
+    2015-05-10 新增
+    :param chichar: 单个字符
+    :return: 识别结果
+    """
+    # print(chichar)
+    im = Image.new("RGB", (150, 150), (255, 255, 255))
+    dr = ImageDraw.Draw(im)
+    font = ImageFont.truetype(fontfile, 72)
+    dr.text((50, 50), chichar, font=font, fill="#000000")
+    im.save("c1.png")
+    fontimage = Image.open("c1.png")  # lujing
+    # 2018-05-11 修改识别psm模式
+    chinesechar = pytesseract.image_to_string(fontimage, lang='chi_sim', config="-psm 8 "+tessdata_dir_config)
     if chinesechar != "":
         return chinesechar
     else:
