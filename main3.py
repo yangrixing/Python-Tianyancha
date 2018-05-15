@@ -418,7 +418,7 @@ def chismiocrs(fontfile, chichar):
     im.save("c1.png")
     fontimage = Image.open("c1.png")  # lujing
     # 2018-05-11 修改识别psm模式
-    chinesechar = pytesseract.image_to_string(fontimage, lang='chi_sim', config="-psm 8 "+tessdata_dir_config)
+    chinesechar = pytesseract.image_to_string(fontimage, lang='chi_sim', config="-psm 8 ")
     if chinesechar != "":
         return chinesechar
     else:
