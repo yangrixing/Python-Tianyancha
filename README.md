@@ -18,17 +18,17 @@
 # 指定路径
 pytesseract.pytesseract.tesseract_cmd = 'lib\\tesseract\\tesseract.exe'
 
-# 指定语料库路径
+# 指定识别库路径
 tessdata_dir_config = '--tessdata-dir "lib\\tesseract\\tessdata"'
 ```
 
-指定路径后需要指定语料库路径，修改代码内的代码，例如：
+指定路径后需要指定识别库路径，修改代码内的代码，例如：
 
 ```python
 pytesseract.image_to_string(fontimage, lang='chi_sim', config="-psm 6 "+tessdata_dir_config)
 ```
 
-追加语料库配置到`pytesseract.image_to_string`的参数内。
+追加识别库配置到`pytesseract.image_to_string`的参数内。
 
 ----
 ## 2018-01-31 更新
