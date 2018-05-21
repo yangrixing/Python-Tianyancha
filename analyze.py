@@ -38,7 +38,7 @@ def cleandata(sheet, datalist, dictname, splitstate):
     """
     data = []
     data_uniq = []
-    with open(dictname, "w") as F:
+    with open(dictname, "w", encoding="utf-8") as F:
         if splitstate:
             print("处理带分割符信息")
             for datarow in range(sheet.nrows):
@@ -78,8 +78,9 @@ def analyze(dictfile, sheet, row, outputfile, sheetkeys, headers):
     :param headers: 标题行
     :return:
     """
+    print("开始分析，请稍后……")
     keys = []
-    with open(dictfile, "r") as R:
+    with open(dictfile, "r", encoding="utf-8") as R:
         for dictrow in R.readlines():
             keys.append(dictrow.split("\n")[0])
     R.close()
@@ -111,19 +112,21 @@ def analyze(dictfile, sheet, row, outputfile, sheetkeys, headers):
             resultstr += resultone + ","
         result = [dictkey, count, resultstr]
         ws.append(result)
+    print("处理完毕，正在生成结果文件……")
     wb.save(filename=outputfile)
+    print("处理完成。")
 
 
 if __name__ == "__main__":
     sheet = exceldata("result.xlsx", 0)
     # 股东信息字典生成
-    # cleandata(sheet, 16, "share_dict.txt", True)
+    cleandata(sheet, 16, "share_dict.txt", True)
     # 法人名称字典
-    # cleandata(sheet, 2, "legal_dict.txt", False)
+    cleandata(sheet, 2, "legal_dict.txt", False)
     # 对外投资字典
-    # cleandata(sheet, 17, "invest_dict.txt", True)
+    cleandata(sheet, 17, "invest_dict.txt", True)
     # 公司名称
-    # cleandata(sheet, 0, "cmp_dict.txt", False)
+    cleandata(sheet, 0, "cmp_dict.txt", False)
     # 分析
     sheetkeyslist = [0]  # 数据表内
     sheetheader = ['法人名称', '拥有公司数量', '参股公司名单']

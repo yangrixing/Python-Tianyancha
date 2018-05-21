@@ -144,7 +144,9 @@ def creategraph(picname, relation, dict1, dict2):
     nx.draw(DG, with_labels=True, node_size=300, font_size=8, node_color=colors)
     fig = plt.gcf()
     fig.set_size_inches(35, 35)
+    print("操作完成，生成文件中，请稍等……")
     fig.savefig(picname, dpi=600)
+    print("生成完毕，文件名:" + picname)
 
 
 if __name__ == "__main__":
