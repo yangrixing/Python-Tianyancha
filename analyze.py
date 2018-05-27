@@ -38,6 +38,7 @@ def cleandata(sheet, datalist, dictname, splitstate):
     """
     data = []
     data_uniq = []
+    print("生成字典……" + dictname)
     with open(dictname, "w", encoding="utf-8") as F:
         if splitstate:
             print("处理带分割符信息")
@@ -114,10 +115,10 @@ def analyze(dictfile, sheet, row, outputfile, sheetkeys, headers):
         ws.append(result)
     print("处理完毕，正在生成结果文件……")
     wb.save(filename=outputfile)
-    print("处理完成。")
 
 
 if __name__ == "__main__":
+    print("读取数据中……")
     sheet = exceldata("result.xlsx", 0)
     # 股东信息字典生成
     cleandata(sheet, 16, "share_dict.txt", True)
@@ -128,7 +129,15 @@ if __name__ == "__main__":
     # 公司名称
     cleandata(sheet, 0, "cmp_dict.txt", False)
     # 分析
-    sheetkeyslist = [0]  # 数据表内
+    sheetkeyslist = [0]  # 数据表内列
     sheetheader = ['法人名称', '拥有公司数量', '参股公司名单']
     # 参数（字典，Excel表对象，与字典对应的Excel数据列，输出文件名，数据表内需要分析关联的数据列名，输出文件标题行）
-    analyze("legal_dict.txt", sheet, 2, "test1.xlsx", sheetkeyslist, sheetheader)
+    analyze("legal_dict.txt", sheet, 2, "法人与公司关系表.xlsx", sheetkeyslist, sheetheader)
+    sheetkeyslist = [0]
+    sheetheader = ['股东名称', '任法人公司数量', '任法人公司名单']
+    analyze("share_dict.txt", sheet, 2, "股东为公司法人表.xlsx", sheetkeyslist, sheetheader)
+    sheetkeyslist = [0]
+    sheetheader = ['股东名称', '投资公司数量', '参股公司名单']
+    analyze("share_dict.txt", sheet, 16, "股东投资关系表.xlsx", sheetkeyslist, sheetheader)
+
+
